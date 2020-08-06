@@ -1,0 +1,12 @@
+root = true
+charset = utf-8
+tab_width = 4
+indent_style = space
+indent_size = 4
+continuation_indent_size = 8
+end_of_line = cr
+trim_trailing_whitespace = true
+insert_final_newline = true
+spaces_around_operators = true
+spaces_around_brackets = false
+indent_brace_style = K&R
