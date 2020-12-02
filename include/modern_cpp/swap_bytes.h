@@ -39,7 +39,13 @@ namespace modern_cpp
 
 #endif /* __has_builtin */
 
-    modern_cpp_constexpr static inline uint16_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, swap_bytes_u16)(uint16_t const value) modern_cpp_noexcept
+#if defined(__cpp_lib_is_constant_evaluated) && (__cpp_lib_is_constant_evaluated >= 201811)
+#   define MODERN_CPP_SWAP_BYTES_CONSTEXPR                                                      modern_cpp_constexpr
+#else /* defined(__cpp_lib_is_constant_evaluated) && (__cpp_lib_is_constant_evaluated >= 201811) */
+#   define MODERN_CPP_SWAP_BYTES_CONSTEXPR
+#endif /* defined(__cpp_lib_is_constant_evaluated) && (__cpp_lib_is_constant_evaluated >= 201811) */
+
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline uint16_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, swap_bytes_u16)(uint16_t const value) modern_cpp_noexcept
     {
 #  ifdef _MODERN_CPP_SWAP_BYTES_16_INTRINSIC_
 
@@ -53,12 +59,12 @@ namespace modern_cpp
         return ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
     }
 
-    modern_cpp_constexpr static inline int16_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, swap_bytes_i16)(int16_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline int16_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, swap_bytes_i16)(int16_t const value) modern_cpp_noexcept
     {
         return (int16_t)(modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_u16)((uint16_t)(value)));
     }
 
-    modern_cpp_constexpr static inline uint32_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, swap_bytes_u32)(uint32_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline uint32_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, swap_bytes_u32)(uint32_t const value) modern_cpp_noexcept
     {
 #  ifdef _MODERN_CPP_SWAP_BYTES_32_INTRINSIC_
 
@@ -72,12 +78,12 @@ namespace modern_cpp
         return ((value & 0xFF000000) >> 24) | ((value & 0x00FF0000) >> 8) | ((value & 0x0000FF00) << 8) | ((value & 0x000000FF) << 24);
     }
 
-    modern_cpp_constexpr static inline int32_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, swap_bytes_i32)(int32_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline int32_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, swap_bytes_i32)(int32_t const value) modern_cpp_noexcept
     {
         return (int32_t)(modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_u32)((uint32_t)(value)));
     }
 
-    modern_cpp_constexpr static inline uint64_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, swap_bytes_u64)(uint64_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline uint64_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, swap_bytes_u64)(uint64_t const value) modern_cpp_noexcept
     {
 #  ifdef _MODERN_CPP_SWAP_BYTES_64_INTRINSIC_
 
@@ -92,12 +98,12 @@ namespace modern_cpp
             ((value & 0x00000000FF000000) << 8) | ((value & 0x0000000000FF0000) << 24) | ((value & 0x000000000000FF00) << 40) | ((value & 0x00000000000000FF) << 56);
     }
 
-    modern_cpp_constexpr static inline int64_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, swap_bytes_i64)(int64_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline int64_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, swap_bytes_i64)(int64_t const value) modern_cpp_noexcept
     {
         return (int64_t)(modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_u64)((uint64_t)(value)));
     }
 
-    modern_cpp_constexpr static inline int16_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, host_to_network_i16)(int16_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline int16_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, host_to_network_i16)(int16_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_i16)(value);
@@ -106,7 +112,7 @@ namespace modern_cpp
 #endif // (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
     }
 
-    modern_cpp_constexpr static inline int16_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, network_to_host_i16)(int16_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline int16_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, network_to_host_i16)(int16_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_i16)(value);
@@ -115,7 +121,7 @@ namespace modern_cpp
 #endif // (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
     }
 
-    modern_cpp_constexpr static inline uint16_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, host_to_network_u16)(uint16_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline uint16_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, host_to_network_u16)(uint16_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_u16)(value);
@@ -124,7 +130,7 @@ namespace modern_cpp
 #endif // (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
     }
 
-    modern_cpp_constexpr static inline uint16_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, network_to_host_u16)(uint16_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline uint16_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, network_to_host_u16)(uint16_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_u16)(value);
@@ -133,7 +139,7 @@ namespace modern_cpp
 #endif // (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
     }
 
-    modern_cpp_constexpr static inline int32_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, host_to_network_i32)(int32_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline int32_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, host_to_network_i32)(int32_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_i32)(value);
@@ -142,7 +148,7 @@ namespace modern_cpp
 #endif // (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
     }
 
-    modern_cpp_constexpr static inline int32_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, network_to_host_i32)(int32_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline int32_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, network_to_host_i32)(int32_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_i32)(value);
@@ -151,7 +157,7 @@ namespace modern_cpp
 #endif // (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
     }
 
-    modern_cpp_constexpr static inline uint32_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, host_to_network_u32)(uint32_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline uint32_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, host_to_network_u32)(uint32_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_u32)(value);
@@ -160,7 +166,7 @@ namespace modern_cpp
 #endif // (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
     }
 
-    modern_cpp_constexpr static inline uint32_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, network_to_host_u32)(uint32_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline uint32_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, network_to_host_u32)(uint32_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_u32)(value);
@@ -169,7 +175,7 @@ namespace modern_cpp
 #endif // (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
     }
 
-    modern_cpp_constexpr static inline int64_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, host_to_network_i64)(int64_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline int64_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, host_to_network_i64)(int64_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_i64)(value);
@@ -178,7 +184,7 @@ namespace modern_cpp
 #endif // (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
     }
 
-    modern_cpp_constexpr static inline int64_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, network_to_host_i64)(int64_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline int64_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, network_to_host_i64)(int64_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_i64)(value);
@@ -187,7 +193,7 @@ namespace modern_cpp
 #endif // (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
     }
 
-    modern_cpp_constexpr static inline uint64_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, host_to_network_u64)(uint64_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline uint64_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, host_to_network_u64)(uint64_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_u64)(value);
@@ -196,7 +202,7 @@ namespace modern_cpp
 #endif // (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
     }
 
-    modern_cpp_constexpr static inline uint64_t modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, network_to_host_u64)(uint64_t const value) modern_cpp_noexcept
+    MODERN_CPP_SWAP_BYTES_CONSTEXPR static inline uint64_t modern_cpp_identifier_declare_scope_prefixed(modern_cpp, network_to_host_u64)(uint64_t const value) modern_cpp_noexcept
     {
 #if (_MODERN_CPP_ENDIANNESS_ == _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_)
         return modern_cpp_identifier_use_scope_prefixed(modern_cpp, swap_bytes_u64)(value);

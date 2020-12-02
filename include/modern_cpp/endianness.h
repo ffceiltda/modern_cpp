@@ -23,16 +23,16 @@ namespace modern_cpp
 {
 #endif /* __cplusplus*/
 
-    modern_cpp_enum_class_declaration
-        modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, endianness)
+    modern_cpp_enum_class_declare
+        modern_cpp_identifier_declare_scope_prefixed(modern_cpp, endianness)
     {
-        modern_cpp_identifier_member_declaration_scope_prefixed(modern_cpp, endianness, unspecified),
-            modern_cpp_identifier_member_declaration_scope_prefixed(modern_cpp, endianness, big_endian) = _MODERN_CPP_ENDIANNESS_BIG_ENDIAN_,
-            modern_cpp_identifier_member_declaration_scope_prefixed(modern_cpp, endianness, little_endian) = _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_
+        modern_cpp_identifier_member_declare_scope_prefixed(modern_cpp, endianness, unspecified),
+            modern_cpp_identifier_member_declare_scope_prefixed(modern_cpp, endianness, big_endian) = _MODERN_CPP_ENDIANNESS_BIG_ENDIAN_,
+            modern_cpp_identifier_member_declare_scope_prefixed(modern_cpp, endianness, little_endian) = _MODERN_CPP_ENDIANNESS_LITTLE_ENDIAN_
     };
 
-    modern_cpp_constexpr static modern_cpp_enum_class_use modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, endianness) const compiled_endianness =
-        ((modern_cpp_enum_class_use modern_cpp_identifier_declaration_scope_prefixed(modern_cpp, endianness)) _MODERN_CPP_ENDIANNESS_);
+    modern_cpp_constexpr static modern_cpp_enum_class_use modern_cpp_identifier_use_scope_prefixed(modern_cpp, endianness) const compiled_endianness =
+        ((modern_cpp_enum_class_use modern_cpp_identifier_use_scope_prefixed(modern_cpp, endianness)) _MODERN_CPP_ENDIANNESS_);
 
 #ifdef __cplusplus
 }
