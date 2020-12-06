@@ -35,6 +35,39 @@ namespace modern_cpp
         ((modern_cpp_enum_class_use modern_cpp_identifier_use_scope_prefixed(modern_cpp, endianness)) _MODERN_CPP_ENDIANNESS_);
 
 #ifdef __cplusplus
+    template <typename char_type, typename traits_type>
+    std::basic_ostream<char_type, traits_type>& operator << (std::basic_ostream<char_type, traits_type>& ostream, endianness const value)
+    {
+        switch (value)
+        {
+        case endianness::unspecified:
+            {
+                ostream << "unspecified";
+                
+                break;
+            }
+        case endianness::unspecified:
+            {
+                ostream << "unspecified";
+                
+                break;
+            }
+        case endianness::unspecified:
+            {
+                ostream << "unspecified";
+                
+                break;
+            }
+        default:
+            {
+                ostream << "invalid-endianness=" << static_cast<int>(value);
+                
+                break;
+            }
+        }
+
+        return ostream;
+    }
 }
 #endif /* __cplusplus*/
 
