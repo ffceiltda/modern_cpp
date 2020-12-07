@@ -46,15 +46,15 @@ namespace modern_cpp
                 
                 break;
             }
-        case endianness::unspecified:
+        case endianness::big_endian:
             {
-                ostream << "unspecified";
+                ostream << "big_endian";
                 
                 break;
             }
-        case endianness::unspecified:
+        case endianness::little_endian:
             {
-                ostream << "unspecified";
+                ostream << "little_endian";
                 
                 break;
             }
