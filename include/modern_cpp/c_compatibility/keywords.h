@@ -48,6 +48,8 @@
 #   define modern_cpp_pragma_warning_enable_clang_or_gcc(warning_id)                            modern_cpp_pragma( GCC diagnostic warning modern_cpp_c_preprocessor_stringify( modern_cpp_c_preprocessor_concatenate( -W, warning_id ) ) ) 
 #   define modern_cpp_pragma_warning_disable_clang_or_gcc(warning_id)                           modern_cpp_pragma( GCC diagnostic ignored modern_cpp_c_preprocessor_stringify( modern_cpp_c_preprocessor_concatenate( -W, warning_id ) ) ) 
 
+#   define modern_cpp_maybe_unused                                                              __attribute__((unused))
+
 #elif (_MODERN_CPP_COMPILER_ == _MODERN_CPP_COMPILER_GNU_GCC_)
 
 #   define modern_cpp_pragma_warning_push()                                                     modern_cpp_pragma( GCC diagnostic push )
@@ -59,6 +61,8 @@
 #   define modern_cpp_pragma_warning_enable_clang_or_gcc(warning_id)                            modern_cpp_pragma( GCC diagnostic warning modern_cpp_c_preprocessor_stringify( modern_cpp_c_preprocessor_concatenate( -W, warning_id ) ) ) 
 #   define modern_cpp_pragma_warning_disable_clang_or_gcc(warning_id)                           modern_cpp_pragma( GCC diagnostic ignored modern_cpp_c_preprocessor_stringify( modern_cpp_c_preprocessor_concatenate( -W, warning_id ) ) ) 
 
+#   define modern_cpp_maybe_unused                                                              __attribute__((unused))
+
 #elif (_MODERN_CPP_COMPILER_ == _MODERN_CPP_COMPILER_MICROSOFT_VISUAL_C_)
 
 #   define modern_cpp_pragma_warning_push()                                                     modern_cpp_pragma( warning( push ) ) \
@@ -69,7 +73,11 @@
 #   define modern_cpp_pragma_warning_enable_msvc(warning_id)                                    modern_cpp_pragma( warning( enable:##warning_id ) )
 #   define modern_cpp_pragma_warning_disable_msvc(warning_id)                                   modern_cpp_pragma( warning( disable:##warning_id ) )
 
+#   define modern_cpp_maybe_unused
+
 #endif /* (_MODERN_CPP_COMPILER_ == _MODERN_CPP_COMPILER_?_) */
+
+#define __unused_fix__ __attribute__((unused))
 
 #ifndef modern_cpp_pragma_warning_push
 #   define modern_cpp_pragma_warning_push(expression)
