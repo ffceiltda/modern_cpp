@@ -79,8 +79,6 @@
 
 #endif /* (_MODERN_CPP_COMPILER_ == _MODERN_CPP_COMPILER_?_) */
 
-#define __unused_fix__ __attribute__((unused))
-
 #ifndef modern_cpp_pragma_warning_push
 #   define modern_cpp_pragma_warning_push(expression)
 #endif /* modern_cpp_pragma_warning_push */
