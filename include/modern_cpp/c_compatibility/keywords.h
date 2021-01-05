@@ -126,8 +126,6 @@
 #   include <memory>
 #   include <type_traits>
 
-#   define modern_cpp_bool                                                                      bool
-
 #   if (_MODERN_CPP_LANGUAGE_CPP_STANDARD_ >= _MODERN_CPP_LANGUAGE_CPP_STANDARD_17_)
 
 #      define modern_cpp_byte                                                                   std::byte
@@ -199,8 +197,6 @@
 
 #   endif /* (_MODERN_C_LANGUAGE_CPP_STANDARD_ >= _MODERN_CPP_LANGUAGE_C_STANDARD_99_) && (_MODERN_C_LANGUAGE_CPP_STANDARD_ < _MODERN_CPP_LANGUAGE_C_STANDARD_2X_) */
 
-#   define modern_cpp_bool                                                                      bool
-
 #   if (_MODERN_C_LANGUAGE_CPP_STANDARD_ >= _MODERN_CPP_LANGUAGE_C_STANDARD_11_)
 #       define modern_cpp_thread_local                                                          thread_local
 #   endif /* (_MODERN_C_LANGUAGE_CPP_STANDARD_ >= _MODERN_CPP_LANGUAGE_C_STANDARD_11_) */
@@ -219,10 +215,6 @@
 #endif /* __has_builtin */
 
 #define modern_cpp_unused(expression)                                                           (void)(expression)
-
-#ifndef modern_cpp_bool
-#   define modern_cpp_bool                                                                      int
-#endif /* modern_cpp_bool */
 
 #ifndef modern_cpp_byte
 #   define modern_cpp_byte                                                                      uint8_t
