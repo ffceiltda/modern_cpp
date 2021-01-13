@@ -243,7 +243,7 @@
 #endif /* modern_cpp_constexpr_if */
 
 #ifndef modern_cpp_addressof
-#   define modern_cpp_addressof(identifier)                                                     &(identifier)
+#   define modern_cpp_addressof(identifier)                                                     (&(identifier))
 #endif /* modern_cpp_addressof */
 
 #ifndef modern_cpp_struct_member_initialize
