@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <functional>
+#include <algorithm>
 #include <forward_list>
 #include <vector>
 #include <mutex>
