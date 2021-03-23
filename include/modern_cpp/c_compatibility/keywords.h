@@ -126,7 +126,7 @@
 #   include <memory>
 #   include <type_traits>
 
-#   if (_MODERN_CPP_LANGUAGE_CPP_STANDARD_ >= _MODERN_CPP_LANGUAGE_CPP_STANDARD_17_)
+#   if defined(__cpp_lib_byte)
 
 #      define modern_cpp_byte                                                                   std::byte
 
@@ -162,10 +162,14 @@
 
 #   endif /* (_MODERN_CPP_LANGUAGE_CPP_STANDARD_ <= _MODERN_CPP_LANGUAGE_CPP_STANDARD_17_) */
 
-#   if (_MODERN_CPP_LANGUAGE_CPP_STANDARD_ >= _MODERN_CPP_LANGUAGE_CPP_STANDARD_11_)
+#   if defined(__cpp_noexcept_function_type)
 
 #       define modern_cpp_noexcept                                                              noexcept
 #       define modern_cpp_noexcept_expression(expression)                                       noexcept(expression)
+
+#   endif // defined(__cpp_noexcept_function_type)
+
+#   if (_MODERN_CPP_LANGUAGE_CPP_STANDARD_ >= _MODERN_CPP_LANGUAGE_CPP_STANDARD_11_)
 
 #       define modern_cpp_enum_class_use
 #       define modern_cpp_enum_class_declare                                                    enum class
