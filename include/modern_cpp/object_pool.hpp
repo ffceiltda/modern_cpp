@@ -225,6 +225,36 @@ namespace modern_cpp
 			return result;
 		}
 	};
+	
+	template <typename ObjectType>
+	class resetable_object_pool
+		: public object_pool<ObjectType>
+	{
+	public:
+		using base_type = object_pool<ObjectType>;
+		using object_type = typename base_type::object_type;
+		using shared_ptr = typename base_type::shared_ptr;
+		using unique_ptr = typename base_type::unique_ptr;
+		
+	private:
+		static void recycle_buffer(object_type* object)
+		{
+			object->reset();
+		}
+
+	public:
+		resetable_object_pool(size_t const growing_factor = 512, size_t const maximum_growths = 128)
+			: base_type(growing_factor, maximum_growths)
+		{
+			this->set_object_recycle_function(resetable_object_pool<ObjectType>::recycle_buffer);
+		}
+
+		resetable_object_pool(resetable_object_pool const&) = delete;
+		resetable_object_pool(resetable_object_pool&&) = delete;
+
+		resetable_object_pool& operator = (resetable_object_pool const&) = delete;
+		resetable_object_pool& operator = (resetable_object_pool&&) = delete;
+	};
 }
 
 #endif // _MODERN_CPP_OBJECT_POOL_HPP_
