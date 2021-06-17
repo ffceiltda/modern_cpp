@@ -14,9 +14,52 @@
 #include <set>
 #include <cassert>
 #endif /* MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS */ 
+#ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
+#include <atomic>
+#endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
 
 namespace modern_cpp
 {
+#ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
+	template <typename ObjectType>
+	struct object_pool_statistics
+	{
+		using object_type = ObjectType;
+
+		constexpr static size_t const object_size = (sizeof(object_type[2]) / 2);
+
+		std::atomic_size_t pooled_objects = {};
+		std::atomic_size_t allocated_objects = {};
+		std::atomic_size_t allocated_objects_outside_pool = {};
+
+		size_t const pooled_objects_estimated_memory_usage() const noexcept
+		{
+			return sizeof(std::vector<object_type>) + (object_size * pooled_objects.load());
+		}
+
+		size_t const allocated_objects_estimated_memory_usage() const noexcept
+		{
+			return (object_size * allocated_objects.load());
+		}
+
+		size_t const allocated_objects_outside_pool_estimated_memory_usage() const noexcept
+		{
+			return (object_size * allocated_objects_outside_pool.load());
+		}
+
+		std::string to_string() const noexcept
+		{
+			std::stringstream ss;
+			
+			ss << "\"statistics\": { \"pooled\": \"" << pooled_objects.load() << " objects\", \"pooled_memory\": \"" << pooled_objects_estimated_memory_usage() << " bytes\""; 
+			ss << ", \"allocated\": \"" << allocated_objects.load() << " objects\", \"allocated_memory\": \"" << allocated_objects_estimated_memory_usage() << " bytes\"";
+			ss << ", \"allocated_outside_pool\": \"" << allocated_objects_outside_pool.load() << " objects\", \"allocated_outside_pool_estimated_memory\": \"" << allocated_objects_outside_pool_estimated_memory_usage() << " bytes\" }";
+
+			return ss.str();
+		}
+	};
+#endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
+
 	template <typename ObjectType>
 	class object_pool
 	{
@@ -33,6 +76,9 @@ namespace modern_cpp
 #ifdef MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS
 		using arena_allocation_track_set_type = std::set<object_type*>;
 #endif /* MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS */ 
+#ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
+		using statistics_type = object_pool_statistics<ObjectType>;
+#endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
 
 		std::mutex mutex;
 		size_t arena_count;
@@ -44,6 +90,9 @@ namespace modern_cpp
 #ifdef MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS
 		arena_allocation_track_set_type tracked_allocations;
 #endif /* MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS */ 
+#ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
+		statistics_type m_statistics;
+#endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
 
 	private:
 		template <typename ResultType>
@@ -69,6 +118,10 @@ namespace modern_cpp
 							std::for_each(std::begin(arena), std::end(arena), [this](object_type& ubt) mutable
 								{
 									free_list.push_front(std::addressof(ubt));
+					
+#ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
+									++m_statistics.pooled_objects;
+#endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
 								});
 						}
 						catch (std::bad_alloc&)
@@ -86,6 +139,10 @@ namespace modern_cpp
 					allocated_memory = free_list.front();
 
 					free_list.pop_front();
+
+#ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
+					++m_statistics.allocated_objects;
+#endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
 
 #ifdef MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS
 					tracked_allocations.insert(allocated_memory);
@@ -110,6 +167,10 @@ namespace modern_cpp
 				if (!pool_allocated)
 				{
 					new (allocated_memory) object_type();
+
+#ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
+					++m_statistics.allocated_objects_outside_pool;
+#endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
 				}
 			}
 			catch (...)
@@ -150,6 +211,10 @@ namespace modern_cpp
 
 						free_list.push_front(allocated_memory);
 
+#ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
+						--m_statistics.allocated_objects;
+#endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
+
 #ifdef MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS
 						auto iterator = tracked_allocations.find(allocated_memory);
 
@@ -164,6 +229,10 @@ namespace modern_cpp
 						allocated_memory->~object_type();
 
 						::free(allocated_memory);
+
+#ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
+						--m_statistics.allocated_objects_outside_pool;
+#endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
 					}
 				});
 		}
@@ -190,7 +259,14 @@ namespace modern_cpp
 				std::abort();
 			}
 		}
-#endif /* MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS */ 
+#endif /* MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS */
+
+#ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
+		auto const& statistics() const noexcept
+		{
+			return m_statistics;
+		}
+#endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
 
 		void set_object_recycle_function(object_recycle_function value)
 		{
