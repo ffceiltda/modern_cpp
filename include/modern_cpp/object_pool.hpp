@@ -16,6 +16,7 @@
 #endif /* MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS */ 
 #ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
 #include <atomic>
+#include <sstream>__ATOMIC_SEQ_CST
 #endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
 
 namespace modern_cpp
