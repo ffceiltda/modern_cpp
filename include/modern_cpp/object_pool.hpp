@@ -10,6 +10,7 @@
 #include <vector>
 #include <mutex>
 #include <cstdint>
+#include <iostream>
 #ifdef MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS
 #include <set>
 #include <cassert>
