@@ -90,6 +90,8 @@ namespace modern_cpp
 		object_recycle_function m_object_recycle_function;
 #ifdef MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS
 		arena_allocation_track_set_type tracked_allocations;
+		std::mutex tracked_external_allocations_mutex;
+		arena_allocation_track_set_type tracked_external_allocations;
 #endif /* MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS */ 
 #ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
 		statistics_type m_statistics;
@@ -99,7 +101,7 @@ namespace modern_cpp
 		template <typename ResultType>
 		auto do_allocate()
 		{
-			object_type* allocated_memory;
+			object_type* allocated_memory = nullptr;
 
 			{
 				std::unique_lock<std::mutex> lock(mutex);
@@ -110,30 +112,53 @@ namespace modern_cpp
 					{
 						try
 						{
-							arenas.emplace_front(arena_growing_factor);
+							arenas.emplace_front();
+							
+							++arena_count;
 
 							arena_type& arena = arenas.front();
 
 							arena.resize(arena_growing_factor);
 
-							std::for_each(std::begin(arena), std::end(arena), [this](object_type& ubt) mutable
-								{
-									free_list.push_front(std::addressof(ubt));
-					
+							auto iterator = std::begin(arena);							
+							auto end_iterator = std::end(arena);
+
+							if (iterator != end_iterator)
+							{
+								object_type& ubt = *iterator;
+								object_type* ubt_address = std::addressof(ubt);
+
+								allocated_memory = ubt_address;								
+
 #ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
-									++m_statistics.pooled_objects;
+								++m_statistics.allocated_objects;
 #endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
-								});
+
+#ifdef MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS
+								tracked_allocations.insert(allocated_memory);
+#endif /* MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS */
+								
+								++iterator;
+							}
+
+							while (iterator != end_iterator)
+							{
+								object_type& ubt = *iterator;
+								object_type* ubt_address = std::addressof(ubt);
+
+								free_list.push_front(ubt_address);
+				
+#ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
+								++m_statistics.pooled_objects;
+#endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
+								
+								++iterator;
+							};
 						}
 						catch (std::bad_alloc&)
 						{
 						}
 					}
-				}
-
-				if (free_list.empty())
-				{
-					allocated_memory = nullptr;
 				}
 				else
 				{
@@ -156,11 +181,11 @@ namespace modern_cpp
 			if (!pool_allocated)
 			{
 				allocated_memory = reinterpret_cast<object_type*>(::malloc(sizeof(object_type)));
-			}
 
-			if (!allocated_memory)
-			{
-				throw std::bad_alloc();
+				if (!allocated_memory)
+				{
+					throw std::bad_alloc();
+				}
 			}
 
 			try
@@ -172,29 +197,19 @@ namespace modern_cpp
 #ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
 					++m_statistics.allocated_objects_outside_pool;
 #endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
+
+#ifdef MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS
+					{
+						std::unique_lock<std::mutex> track_lock(tracked_external_allocations_mutex);
+
+						tracked_external_allocations.insert(allocated_memory);
+					}
+#endif /* MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS */
 				}
 			}
 			catch (...)
 			{
-				if (pool_allocated)
-				{
-					std::unique_lock<std::mutex> lock(mutex);
-
-					free_list.push_front(allocated_memory);
-
-#ifdef MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS
-					auto iterator = tracked_allocations.find(allocated_memory);
-
-					if (iterator != tracked_allocations.end())
-					{
-						tracked_allocations.erase(iterator);
-					}
-#endif /* MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS */
-				}
-				else
-				{
-					::free(allocated_memory);
-				}
+				::free(allocated_memory);
 
 				throw;
 			}
@@ -227,13 +242,33 @@ namespace modern_cpp
 					}
 					else
 					{
-						allocated_memory->~object_type();
-
-						::free(allocated_memory);
+						try
+						{
+							allocated_memory->~object_type();
+						}
+						catch (std::exception const& e)
+						{
+							std::cerr << typeid(this).name() << " exception on object destruction: " << e.what() << std::endl;
+						}
 
 #ifdef MODERN_CPP_OBJECT_POOL_STATISTICS
 						--m_statistics.allocated_objects_outside_pool;
 #endif /* MODERN_CPP_OBJECT_POOL_STATISTICS */
+
+#ifdef MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS
+						{
+							std::unique_lock<std::mutex> track_lock(tracked_external_allocations_mutex);
+						
+							auto iterator = tracked_external_allocations.find(allocated_memory);
+
+							if (iterator != tracked_external_allocations.end())
+							{
+								tracked_external_allocations.erase(iterator);
+							}
+						}
+#endif /* MODERN_CPP_OBJECT_POOL_DEBUG_CHECKS */
+
+						::free(allocated_memory);
 					}
 				});
 		}
@@ -254,6 +289,13 @@ namespace modern_cpp
 		virtual ~object_pool()
 		{
 			if (!tracked_allocations.empty())
+			{
+				assert(false);
+
+				std::abort();
+			}
+			
+			if (!tracked_external_allocations.empty())
 			{
 				assert(false);
 
