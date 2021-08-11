@@ -84,8 +84,8 @@ namespace modern_cpp
 
 		std::mutex mutex;
 		size_t arena_count;
-		size_t const arena_growing_factor;
-		size_t const maximum_arenas;
+		size_t arena_growing_factor;
+		size_t maximum_arenas;
 		arena_list_type arenas;
 		arena_pointer_list_type free_list;
 		object_recycle_function m_object_recycle_function;
@@ -275,9 +275,29 @@ namespace modern_cpp
 		}
 
 	public:
-		object_pool(size_t const growing_factor = 256, size_t const maximum_growths = 64)
-			: arena_count(0), arena_growing_factor(growing_factor), maximum_arenas(maximum_growths)
+		object_pool(size_t const growing_factor = 256, size_t const maximum_arenas_ = 64)
+			: arena_count(0), arena_growing_factor(growing_factor), maximum_arenas(maximum_arenas_)
 		{
+		}
+
+		size_t get_arena_growing_factor() const noexcept
+		{
+			return arena_growing_factor;
+		}
+
+		void set_arena_growing_factor(size_t const arena_growing_factor_)
+		{
+			arena_growing_factor = arena_growing_factor_;
+		}
+
+		size_t get_maximum_arenas() const noexcept
+		{
+			return maximum_arenas;
+		}
+
+		void set_maximum_arenas(size_t const maximum_arenas_)
+		{
+			maximum_arenas = maximum_arenas_;
 		}
 
 		object_pool(object_pool const&) = delete;
